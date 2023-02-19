@@ -45,10 +45,10 @@ jobs:
           archs: x86_64,aarch64
           workdir: netcat-openbsd
 
-      - uses: distroless/actions/apko-build@main
+      - uses: chainguard-images/actions/apko-publish@main
         id: apko
         with:
-          tag: ghcr.io/${{ github.repository }}:latest
+          tag: ghcr.io/tuananh/netcat:latest
           keyring-append: /github/workspace/melange.rsa.pub
           source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
 
