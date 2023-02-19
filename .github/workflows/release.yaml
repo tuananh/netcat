@@ -1,0 +1,63 @@
+name: Build action
+
+on:
+  workflow_dispatch:
+  push:
+  schedule:
+    - cron: '15 3 * * *'  # every day at 03:15 (just wanted to avoid midnight)
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+  
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+
+    # https://docs.github.com/en/actions/reference/authentication-in-a-workflow
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+
+    steps:
+      - name: Generate snapshot date
+        id: snapshot-date
+        run: |
+          echo ::set-output name=date::$(date -u +%Y%m%d)
+          echo ::set-output name=epoch::$(date -u +%s)
+        shell: bash
+
+      - uses: actions/checkout@main
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      
+      - name: Install qemu-user
+        run: sudo apt-get install -y qemu-user
+
+      - uses: sigstore/cosign-installer@main
+      
+      - uses: chainguard-dev/actions/melange-build@main
+        with:
+          sign-with-temporary-key: true
+          archs: x86_64,aarch64
+          empty-workspace: true
+
+      - uses: distroless/actions/apko-build@main
+        id: apko
+        with:
+          tag: ghcr.io/${{ github.repository }}:latest
+          keyring-append: /github/workspace/melange.rsa.pub
+          source-date-epoch: ${{ steps.snapshot-date.outputs.epoch }}
+
+      - uses: docker/login-action@49ed152c8eca782a232dede0303416e8f356c37b # v1.13.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - shell: bash
+        run: |
+          COSIGN_EXPERIMENTAL=true cosign sign ${{ steps.apko.outputs.digest }}
