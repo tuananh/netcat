@@ -4,7 +4,7 @@ netcat
 Docker image for Debian port of OpenBSD's netcat. To use run
 
 ```
-docker run --rm -ti tuananh/netcat
+docker run --rm -ti ghcr.io/tuananh/netcat
 ```
 
 See [here](https://manpages.debian.org/unstable/netcat-openbsd/nc.1.en.html) for invocation details.
