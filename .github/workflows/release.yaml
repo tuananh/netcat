@@ -84,6 +84,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.apko.outputs.digest }}
-      - uses: github/codeql-action/upload-sarif@v1
+          args: --sarif-file-output=snyk.sarif
+      - uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: snyk.sarif
