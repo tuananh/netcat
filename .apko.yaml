@@ -6,8 +6,6 @@ contents:
     - '@local /github/workspace/packages'
   packages:
     - wolfi-baselayout
-    - ca-certificates-bundle
-    - busybox
     - netcat-openbsd@local
 
 accounts:
