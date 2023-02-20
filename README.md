@@ -1,7 +1,7 @@
 netcat
 ------
 
-A minimal, secure container image for Debian port of OpenBSD's netcat, available in both `amd64` and `arm64`. To use run:
+A minimal and [secure](https://github.com/tuananh/netcat/security/advisories) container image for Debian port of OpenBSD's netcat, available in both `amd64` and `arm64`. To use run:
 
 ```
 docker run --rm -ti ghcr.io/tuananh/netcat -zv google.com 443
