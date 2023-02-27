@@ -46,7 +46,7 @@ jobs:
           archs: x86_64,aarch64
           workdir: netcat-openbsd
 
-      - uses: chainguard-images/actions/apko-publish@main
+      - uses: chainguard-images/actions/apko-publish@e61cb0631c83e84cadc21337be090ad06bf05da2
         id: apko
         with:
           tag: ghcr.io/tuananh/netcat:latest
